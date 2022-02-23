@@ -185,6 +185,23 @@ class Peer extends EnhancedEventEmitter
 		await this._transport.send(notification);
 	}
 
+
+	_onMsg(message) {
+		console.log('getMessage')
+		if (message.request)
+			this._handleRequest(message);
+		else if (message.response)
+			this._handleResponse(message);
+		else if (message.notification)
+			this._handleNotification(message);
+	}
+
+	unHandleTransport()
+	{
+		this._transport.removeListener('message', this._onMsg);
+	}
+
+
 	_handleTransport()
 	{
 		if (this._transport.closed)
@@ -206,15 +223,7 @@ class Peer extends EnhancedEventEmitter
 			this.safeEmit('close');
 		});
 
-		this._transport.on('message', (message) =>
-		{
-			if (message.request)
-				this._handleRequest(message);
-			else if (message.response)
-				this._handleResponse(message);
-			else if (message.notification)
-				this._handleNotification(message);
-		});
+		this._transport.on('message', this._onMsg);
 	}
 
 	_handleRequest(request)
