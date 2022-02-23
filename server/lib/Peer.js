@@ -186,8 +186,7 @@ class Peer extends EnhancedEventEmitter
 	}
 
 
-	_onMsg(message) {
-		console.log('getMessage')
+	_onMsg = (message) =>{
 		if (message.request)
 			this._handleRequest(message);
 		else if (message.response)
